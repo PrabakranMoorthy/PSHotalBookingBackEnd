@@ -1,5 +1,6 @@
 const Hotel = require("../models/Hotel");
 const Room = require("../models/Room");
+const Booking = require("../models/Booking");
 
 // Create a new hotel (only accessible by admin)
 exports.createHotel = async (req, res) => {
@@ -21,6 +22,15 @@ exports.createHotel = async (req, res) => {
 exports.getHotels = async (req, res) => {
   try {
     const hotels = await Hotel.find({ admin: req.user.id }); // Only fetch hotels created by the logged-in admin
+    res.status(200).json(hotels);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching hotels", error });
+  }
+};
+
+exports.getHotelsUser = async (req, res) => {
+  try {
+    const hotels = await Hotel.find();
     res.status(200).json(hotels);
   } catch (error) {
     res.status(500).json({ message: "Error fetching hotels", error });
@@ -103,5 +113,39 @@ exports.updateRoom = async (req, res) => {
     res.status(200).json({ message: "Room updated successfully", room });
   } catch (error) {
     res.status(500).json({ message: "Error updating room", error });
+  }
+};
+
+exports.getRooms = async (req, res) => {
+  const { hotelId } = req.params; // Access the hotelId from the route parameter
+  const { startDate, endDate } = req.query; // Access the query parameters
+
+  // Optionally, you can parse the dates if needed
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  try {
+    // Find bookings that overlap with the given date range for the specific hotel
+    const bookedRooms = await Booking.find({
+      hotel: hotelId,
+      $or: [
+        // Overlapping booking conditions
+        { startDate: { $lte: end }, endDate: { $gte: start } },
+        { startDate: { $gte: start }, startDate: { $lte: end } },
+        { endDate: { $gte: start }, endDate: { $lte: end } },
+      ],
+    }).select("room");
+    console.log("booked rooms", bookedRooms);
+    // Extract the list of booked room IDs
+    const bookedRoomIds = bookedRooms.map((booking) => booking.room);
+
+    // Find available rooms for the hotel that are not in the bookedRoomIds array
+    const availableRooms = await Room.find({
+      hotel: hotelId,
+      _id: { $nin: bookedRoomIds },
+    });
+
+    res.status(200).json(availableRooms);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching rooms", error });
   }
 };
