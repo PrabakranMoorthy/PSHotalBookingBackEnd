@@ -3,6 +3,8 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const authRoutes = require("./routes/authRoutes");
+const adminRoutes = require("./routes/adminRoutes");
+const bookingRoutes = require("./routes/bookingRoutes");
 
 // Load environment variables
 dotenv.config();
@@ -15,6 +17,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Auth Routes
 app.use("/api/auth", authRoutes);
+// Admin Routes (protected)
+app.use("/api/admin", adminRoutes);
+//Booking Routes
+app.use("/api/bookings", bookingRoutes);
 
 // MongoDB Connection
 mongoose

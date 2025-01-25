@@ -4,7 +4,7 @@ const User = require("../models/User");
 
 // Register a new user
 exports.register = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
 
   try {
     // Check if user already exists
@@ -20,6 +20,7 @@ exports.register = async (req, res) => {
       name,
       email,
       password: hashedPassword,
+      role,
     });
 
     res.status(201).json({ message: "User registered successfully" });
