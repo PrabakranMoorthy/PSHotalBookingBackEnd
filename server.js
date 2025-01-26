@@ -22,7 +22,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 //Booking Routes
 app.use("/api/bookings", bookingRoutes);
-
 //Booking Routes
 app.use("/api/user", userRoutes);
 // MongoDB Connection
