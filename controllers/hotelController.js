@@ -127,7 +127,7 @@ exports.getRooms = async (req, res) => {
     // Find bookings that overlap with the given date range for the specific hotel
     const bookedRooms = await Booking.find({
       hotel: hotelId,
-      status: { $ne: "Cancelled" },
+      //status: { $ne: "Cancelled" },
       $or: [
         { startDate: { $lt: endDate }, endDate: { $gt: startDate } }, // Overlapping booking check
       ],
