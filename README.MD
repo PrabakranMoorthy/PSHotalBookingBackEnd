@@ -37,10 +37,6 @@ A comprehensive Hotel Booking and Reservation System built using the MERN stack 
 
 This system is designed to simplify hotel bookings while ensuring security and reliability for users.
 
-## Additional Resources
-
-### Postman Documentation for Backend Details
-Access the Postman collection for API testing:
 
 
 
